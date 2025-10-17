@@ -1,19 +1,24 @@
 # Imports
 from microbit import *
 import radio
-from typing import Union
 radio.on()
 
 while True:
-    message: Union[str,None] = radio.receive()
+    message = radio.receive()
     
-    if button_a.was_pressed() or message.lower() == "PRIME":
+    if button_a.was_pressed() or str(message).upper() == "PRIME":
         radio.send("Primed.")
         while True:
+            message = radio.receive()
+            
+            if button_b.was_pressed() or str(message).upper() == "RESET":
+                radio.send("No longer primed.")
+                break
+            
             if accelerometer.current_gesture() == "freefall":
                 display.show(Image.SAD)
                 radio.send("Falling!")
-                sleep(1000)
+                sleep(2500)
                 break
             else:
                 display.show(Image.HAPPY)
