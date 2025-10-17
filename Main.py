@@ -1,8 +1,18 @@
 # Imports
 from microbit import *
+import radio
+
+radio.on()
 
 while True:
-    if accelerometer.current_gesture():
-        print("oh dear god")
+    message = radio.receive()
+    
+    if accelerometer.current_gesture() == "freefall":
+        display.show(Image.SAD)
+        radio.send("Falling!")
     else:
-        print("were fine")
+        display.show(Image.HAPPY)
+    
+    if message:
+        display.scroll(message)
+        sleep(1000)
